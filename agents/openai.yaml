@@ -1,0 +1,4 @@
+interface:
+  display_name: "游戏数据分析体系构建"
+  short_description: "为不同游戏产品设计指标树、口径字典、埋点与分析方案"
+  default_prompt: "请使用 $build-game-analytics-system 为这款游戏设计可落地的数据分析指标体系。"
