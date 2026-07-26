@@ -37,6 +37,8 @@ Adapt every definition to the product's core loop, business model, lifecycle, id
    - Prefer server-authoritative events for money, inventory, progression, match results, and entitlements.
    - Define identity stitching, event versioning, deduplication, late-arrival, refund, test-account, bot, and timezone policies.
    - Read [instrumentation-and-data-quality.md](references/instrumentation-and-data-quality.md).
+   - When designing or reviewing event collection, also read [telemetry-governance.md](references/telemetry-governance.md). Treat the tracking plan as a versioned data contract, not an informal event list.
+   - For multiplayer, matchmaking, party, guild, or social features, also read [multiplayer-social-analytics.md](references/multiplayer-social-analytics.md).
 
 6. Select analyses and decision loops.
    - Match the method to the decision: decomposition, funnel, cohort, survival, segmentation, experiments, causal comparison, forecasting, churn prediction, economy flow, association, clustering, or network analysis.
@@ -70,6 +72,10 @@ python scripts/validate_metric_spec.py <metric-spec.json-or-yaml>
 - Report both absolute volume and rate where either can hide the other.
 - Protect player experience with quality, fairness, privacy, and monetization guardrails.
 - Avoid collecting unnecessary personal data. Use approved consent and retention policies.
+- Keep stable event names and bounded dimensions. Put dynamic IDs, timestamps, coordinates, or unbounded text in typed properties or restricted raw data, never in event names or dashboard dimensions.
+- Route low-latency operational signals and analysis telemetry deliberately. The same player journey may need correlated events in both lanes, but real-time delivery is not a default for all clickstream.
+- Record experiment assignment and actual exposure separately. For networked features, state the interference risk and choose a defensible randomization unit before claiming a causal effect.
+- For matchmaking, freeze the formation-time rating, uncertainty, prediction, queue configuration, latency, and party context; do not retrospectively substitute later state into fairness analysis.
 
 ## Source-grounded knowledge
 

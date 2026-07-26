@@ -36,6 +36,15 @@ METRIC_REQUIRED = {
     "status",
 }
 VALID_STATUSES = {"draft", "proposed", "approved", "deprecated"}
+VALID_EVENT_STATUSES = {
+    "proposed",
+    "approved",
+    "implemented",
+    "validated",
+    "official",
+    "deprecated",
+}
+VALID_DELIVERY_LANES = {"real_time", "telemetry", "both"}
 RATE_PATTERN = re.compile(
     r"(率|占比|ratio|rate|retention|conversion|ctr|cvr|share)", re.IGNORECASE
 )
@@ -119,6 +128,48 @@ def validate(spec: dict[str, Any]) -> tuple[list[str], list[str]]:
         for field in ("owner", "authoritative_source"):
             if blank(event.get(field)):
                 warnings.append(f"{label} ({name}) should define {field}.")
+        for field in ("event_version", "entity", "schema_status", "delivery_lane"):
+            if blank(event.get(field)):
+                warnings.append(
+                    f"{label} ({name}) should define {field} for a governed event contract."
+                )
+        schema_status = event.get("schema_status")
+        if schema_status is not None and schema_status not in VALID_EVENT_STATUSES:
+            errors.append(
+                f"{label} ({name}): schema_status must be one of "
+                f"{sorted(VALID_EVENT_STATUSES)}."
+            )
+        delivery_lane = event.get("delivery_lane")
+        if delivery_lane is not None and delivery_lane not in VALID_DELIVERY_LANES:
+            errors.append(
+                f"{label} ({name}): delivery_lane must be one of "
+                f"{sorted(VALID_DELIVERY_LANES)}."
+            )
+        properties = event.get("properties")
+        if properties is not None:
+            if not isinstance(properties, list):
+                errors.append(f"{label} ({name}): properties must be a list.")
+            else:
+                property_names: set[str] = set()
+                for property_index, prop in enumerate(properties):
+                    property_label = f"{label}.properties[{property_index}]"
+                    if not isinstance(prop, dict):
+                        errors.append(f"{property_label} must be an object.")
+                        continue
+                    property_name = prop.get("name")
+                    if not isinstance(property_name, str) or not property_name.strip():
+                        errors.append(f"{property_label}.name is required.")
+                        continue
+                    if property_name in property_names:
+                        errors.append(
+                            f"Duplicate property name in {label} ({name}): {property_name}"
+                        )
+                    property_names.add(property_name)
+                    for field in ("type", "cardinality", "data_classification"):
+                        if blank(prop.get(field)):
+                            warnings.append(
+                                f"{property_label} ({property_name}) should define {field}."
+                            )
 
     metrics_value = spec.get("metrics")
     if not isinstance(metrics_value, list) or not metrics_value:

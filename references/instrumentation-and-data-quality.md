@@ -9,6 +9,7 @@
 5. Reliability rules
 6. Quality monitoring
 7. Privacy and governance
+8. Further implementation guidance
 
 ## 1. Entity model
 
@@ -190,3 +191,8 @@ Run synthetic journeys in QA and production-safe test accounts:
 - Maintain semantic definitions as versioned code or controlled metadata.
 - Log definition changes and restate historical series only with an explicit policy.
 - Treat external platform or regulatory requirements as time-sensitive; verify current official documentation before implementation.
+
+## 8. Further implementation guidance
+
+- Use [telemetry-governance.md](telemetry-governance.md) for the tracking-plan lifecycle, cardinality controls, two-lane routing, and identity/deletion requirements.
+- Use [multiplayer-social-analytics.md](multiplayer-social-analytics.md) when the product includes matchmaking, parties, guilds, social graphs, moderation, or networked experiments.

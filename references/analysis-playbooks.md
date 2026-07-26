@@ -163,6 +163,8 @@ Start with adoption and shared-value funnels. Compare group survival, reciprocit
 
 Use graph methods for transfer rings, studio/bot networks, guild structure, influence, and isolated users. Validate operational labels before enforcement.
 
+For matchmaking, party, guild, and social experiments, account-level randomization can be invalid because players affect one another. Define the likely spillover path first, then use an appropriate cluster (party/guild/match pool) or time-based switchback when it reduces interference. Log assignment and actual exposure separately, run a sample-ratio-mismatch check before reading outcomes, and predefine fairness, latency, safety, and queue-health guardrails. See [multiplayer-social-analytics.md](multiplayer-social-analytics.md).
+
 ### Server launch, migration, or merge
 
 Compare population, concurrency, queue, retention, revenue, economy, power/faction balance, match quality, migration, and sentiment. Align by server age and use comparable worlds. Separate novelty, marketing, redistribution, and genuine incremental growth.
@@ -180,6 +182,7 @@ Start with seasonal naive and moving-average baselines. Add exponential smoothin
 - Predefine experiment primary and guardrail metrics.
 - Use user/account-level randomization unless interference requires cluster randomization.
 - Check sample ratio mismatch, novelty, network spillover, and logging changes.
+- Validate that experiment assignment, eligibility, and actual exposure each reconcile before estimating impact.
 - Prefer medians/quantiles or robust models for skewed distributions.
 - Treat clustering, correspondence, association rules, DBSCAN, and network analysis as discovery tools requiring validation.
 

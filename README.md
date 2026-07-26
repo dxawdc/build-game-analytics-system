@@ -66,6 +66,12 @@ python scripts/validate_metric_spec.py <metric-spec.json-or-yaml>
 
 校验器会检查指标 ID、必填口径、事件引用、北极星引用、状态字段、比率分母、留存队列定义和金额口径等常见问题。
 
+## 新增能力
+
+- 事件治理：将 tracking plan 作为版本化数据契约，覆盖事件状态、属性类型、基数、投递通道、质量 SLO、身份与删除流程。
+- 多人竞技与社交：覆盖匹配服务、匹配公平、排队体验、新手不确定性、组队/公会旅程和网络干扰实验。
+- 提供可校验的多人事件契约示例：`examples/multiplayer-event-contract.json`。
+
 ## License
 
 [MIT](LICENSE)

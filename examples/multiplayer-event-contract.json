@@ -1,0 +1,85 @@
+{
+  "product": {
+    "name": "Example competitive game",
+    "archetype": "competitive-pvp",
+    "lifecycle_stage": "live",
+    "timezone": "UTC",
+    "currency": "USD",
+    "identity_unit": "account",
+    "north_star": ["weekly_quality_match_players"]
+  },
+  "events": [
+    {
+      "name": "match_formed",
+      "owner": "matchmaking-service",
+      "authoritative_source": "server",
+      "event_version": "1.0",
+      "entity": "match",
+      "schema_status": "official",
+      "delivery_lane": "both",
+      "properties": [
+        {
+          "name": "queue_id",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        },
+        {
+          "name": "predicted_win_probability",
+          "type": "number",
+          "cardinality": "continuous_measure",
+          "data_classification": "internal"
+        },
+        {
+          "name": "matchmaking_config_version",
+          "type": "string",
+          "cardinality": "bounded_release_id",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "match_ended",
+      "owner": "game-server",
+      "authoritative_source": "server",
+      "event_version": "1.0",
+      "entity": "player_match",
+      "schema_status": "official",
+      "delivery_lane": "telemetry",
+      "properties": [
+        {
+          "name": "valid_match",
+          "type": "boolean",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        },
+        {
+          "name": "disconnect_reason",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        }
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "weekly_quality_match_players",
+      "name": "Weekly quality match players",
+      "domain": "engagement",
+      "question": "How many accounts receive a repeatable, valid competitive experience?",
+      "definition": "Distinct eligible accounts that complete at least three valid matches in a calendar week with no confirmed severe network failure.",
+      "formula": "count_distinct(eligible account_id)",
+      "entity": "account",
+      "grain": "calendar_week",
+      "window": "calendar week in product timezone",
+      "dimensions": ["platform", "region", "queue_id"],
+      "filters": ["exclude QA, bots, banned accounts, and invalid matches"],
+      "source_events": ["match_formed", "match_ended"],
+      "owner": "product-analytics",
+      "freshness": "daily by 10:00 UTC",
+      "status": "approved",
+      "direction": "increase while fairness and latency guardrails hold"
+    }
+  ]
+}
