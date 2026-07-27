@@ -55,6 +55,38 @@ MONEY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 ID_PATTERN = re.compile(r"^[a-z][a-z0-9_]*$")
+ROI_PATTERN = re.compile(r"(?<![a-z])roi(?![a-z])|投资回报", re.IGNORECASE)
+ROAS_PATTERN = re.compile(r"roas|广告支出回报", re.IGNORECASE)
+LTV_PATTERN = re.compile(
+    r"(?<![a-z])ltv(?![a-z])|生命周期价值|lifetime\s*value", re.IGNORECASE
+)
+REVENUE_TOKEN = re.compile(
+    r"(revenue|bookings|gmv|收入|流水|回收|广告收入|变现)", re.IGNORECASE
+)
+SPEND_TOKEN = re.compile(
+    r"(spend|cost|投放|消耗|成本|投入|investment)", re.IGNORECASE
+)
+CONTRIBUTION_TOKEN = re.compile(
+    r"(margin|contribution|profit|net of|扣除|毛利|利润|净贡献)", re.IGNORECASE
+)
+HORIZON_PATTERN = re.compile(
+    r"(d\s*\d+|day\s*\d+|第\s*\d+\s*天|\d+\s*日|\d+\s*天|week\s*\d+|"
+    r"horizon|时间跨度|观察窗)",
+    re.IGNORECASE,
+)
+MATURITY_PATTERN = re.compile(
+    r"(realized|actual|observed|predicted|prediction|forecast|projected|"
+    r"extrapolat|已实现|实测|实际|预测|预估|外推|拟合)",
+    re.IGNORECASE,
+)
+BENCHMARK_PROVENANCE = (
+    "source",
+    "region",
+    "genre",
+    "platform",
+    "cohort_date",
+    "definition",
+)
 
 
 def load_spec(path: Path) -> dict[str, Any]:
@@ -205,7 +237,7 @@ def validate(spec: dict[str, Any]) -> tuple[list[str], list[str]]:
                 f"{display}: status must be one of {sorted(VALID_STATUSES)}."
             )
 
-        for list_field in ("dimensions", "source_events"):
+        for list_field in ("dimensions", "source_events", "aliases"):
             value = metric.get(list_field)
             if value is not None and not isinstance(value, list):
                 errors.append(f"{display}: {list_field} must be a list.")
@@ -271,6 +303,61 @@ def validate(spec: dict[str, Any]) -> tuple[list[str], list[str]]:
                 warnings.append(
                     f"{display}: define the monetary/revenue or cost basis."
                 )
+
+        formula_and_definition = f"{formula} {definition}"
+        horizon_text = f"{name_and_id} {window} {definition}"
+
+        if ROI_PATTERN.search(name_and_id) and not ROAS_PATTERN.search(name_and_id):
+            revenue_over_spend = (
+                REVENUE_TOKEN.search(formula)
+                and SPEND_TOKEN.search(formula)
+                and any(token in formula for token in ("/", "÷"))
+            )
+            if revenue_over_spend and not CONTRIBUTION_TOKEN.search(
+                formula_and_definition
+            ):
+                warnings.append(
+                    f"{display}: revenue divided by spend is ROAS, not ROI. "
+                    "Rename it, or state the contribution/profit basis if ROI is intended."
+                )
+
+        if ROAS_PATTERN.search(name_and_id) or ROI_PATTERN.search(name_and_id):
+            if not HORIZON_PATTERN.search(horizon_text):
+                warnings.append(
+                    f"{display}: ROAS/ROI needs an explicit horizon (for example d7, d30)."
+                )
+
+        if LTV_PATTERN.search(name_and_id):
+            if not HORIZON_PATTERN.search(horizon_text):
+                warnings.append(
+                    f"{display}: LTV needs an explicit horizon; unbounded LTV is not measurable."
+                )
+            maturity_text = " ".join(
+                str(metric.get(key, ""))
+                for key in ("estimation", "estimation_method", "maturity", "definition")
+            )
+            if not MATURITY_PATTERN.search(maturity_text):
+                warnings.append(
+                    f"{display}: label LTV as realized or predicted, and record the "
+                    "model, censoring, and backtest error when predicted."
+                )
+
+        benchmark = metric.get("benchmark", metric.get("benchmarks"))
+        if not blank(benchmark):
+            if not isinstance(benchmark, dict):
+                warnings.append(
+                    f"{display}: benchmark must carry provenance "
+                    f"({', '.join(BENCHMARK_PROVENANCE)}), not a bare value."
+                )
+            else:
+                missing_provenance = [
+                    key for key in BENCHMARK_PROVENANCE if blank(benchmark.get(key))
+                ]
+                if missing_provenance:
+                    warnings.append(
+                        f"{display}: benchmark is missing provenance: "
+                        + ", ".join(missing_provenance)
+                    )
 
         if blank(metric.get("direction")):
             warnings.append(f"{display}: direction/interpretation is recommended.")

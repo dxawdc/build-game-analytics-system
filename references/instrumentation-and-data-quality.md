@@ -196,3 +196,5 @@ Run synthetic journeys in QA and production-safe test accounts:
 
 - Use [telemetry-governance.md](telemetry-governance.md) for the tracking-plan lifecycle, cardinality controls, two-lane routing, and identity/deletion requirements.
 - Use [multiplayer-social-analytics.md](multiplayer-social-analytics.md) when the product includes matchmaking, parties, guilds, social graphs, moderation, or networked experiments.
+- Use [metric-system-engineering.md](metric-system-engineering.md) for metric naming and composition, the single definition source, alert-threshold design against seasonal baselines, serving-lane choice (real-time / near-line / offline), and the intake-to-adoption operating loop.
+- Use [ua-and-marketing-analytics.md](ua-and-marketing-analytics.md) when ad-network, attribution (MMP), or campaign data enters the warehouse: those feeds are partner-owned, restated, and privacy-truncated, so they need reconciliation rules rather than direct joins.

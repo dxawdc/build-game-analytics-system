@@ -22,8 +22,16 @@
 | What items/actions co-occur? | cross-tab | association rules/correspondence |
 | How do relationships matter? | group comparison | graph/network analysis |
 | What will happen? | transparent baseline forecast | validated predictive model |
+| Is this target even reachable? | growth identity and retention area | budget/capacity scenario model |
+| Why did ad revenue move? | IAA factor decomposition | network/geo/placement drill-down |
+| Why don't our numbers match the partner's? | definition and identity reconciliation | pipeline audit |
 
 Always begin with a data-quality and population check.
+
+Feasibility and projection questions go to [growth-accounting-and-forecasting.md](growth-accounting-and-forecasting.md);
+ad-revenue questions to [hybrid-monetization-and-iaa.md](hybrid-monetization-and-iaa.md); definition disputes to
+[cn-terminology-and-pitfalls.md](cn-terminology-and-pitfalls.md). Worked end-to-end examples, including two where the
+original conclusion was wrong, are in [case-studies.md](case-studies.md).
 
 ## 2. Acquisition and onboarding
 
@@ -35,6 +43,9 @@ Always begin with a data-quality and population check.
 4. Normalize region, platform, creative, campaign, and acquisition date.
 5. Compare mature LTV/ROAS horizons or use a backtested early predictor.
 6. Separate attribution reporting from incrementality.
+
+For campaign/creative diagnosis, attribution configuration, fraud signatures, and marginal-return budget decisions,
+use [ua-and-marketing-analytics.md](ua-and-marketing-analytics.md).
 
 ### Onboarding friction
 
@@ -106,6 +117,9 @@ Use mix-adjusted comparisons before blaming player behavior.
 4. Report uncertainty and error by channel/region/platform.
 5. Compare LTV to fully specified cost and cash timing.
 6. Use marginal, not merely average, returns when scaling spend.
+
+Curve-fitting forms, the retention-area constant, steady-state DAU, target-to-budget inversion, and the failure modes
+of long-tail extrapolation are in [growth-accounting-and-forecasting.md](growth-accounting-and-forecasting.md).
 
 ### Pricing
 

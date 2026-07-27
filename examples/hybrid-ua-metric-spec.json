@@ -1,0 +1,361 @@
+{
+  "product": {
+    "name": "Example hybrid-monetization casual game (示例：混合变现休闲游戏)",
+    "archetype": "casual-hybrid",
+    "secondary_traits": ["paid-acquisition-driven", "mini-game distribution"],
+    "lifecycle_stage": "scaling",
+    "timezone": "Asia/Shanghai",
+    "game_day_boundary": "00:00 local; server reset at 05:00 is a separate content day",
+    "currency": "CNY",
+    "revenue_basis": "net revenue after platform share, channel share, refunds, and tax",
+    "identity_unit": "account",
+    "attribution_window": "click 7d, view 1d, self-attributing networks per contract",
+    "north_star": ["daily_value_realizing_players"]
+  },
+  "events": [
+    {
+      "name": "ua_install_attributed",
+      "owner": "growth-data",
+      "authoritative_source": "mmp_postback",
+      "event_version": "2.1",
+      "entity": "install",
+      "schema_status": "implemented",
+      "delivery_lane": "telemetry",
+      "notes": "Partner-owned and restatable. Reconcile against first_launch; never treat as exact.",
+      "properties": [
+        {
+          "name": "media_source",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        },
+        {
+          "name": "campaign_id",
+          "type": "string",
+          "cardinality": "high_bounded_id",
+          "data_classification": "internal"
+        },
+        {
+          "name": "attribution_type",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "ua_spend_daily",
+      "owner": "growth-data",
+      "authoritative_source": "ad_network_report",
+      "event_version": "1.3",
+      "entity": "campaign_day",
+      "schema_status": "implemented",
+      "delivery_lane": "telemetry",
+      "notes": "Daily partner feed, restated for up to 3 days. Snapshot before use in ROAS.",
+      "properties": [
+        {
+          "name": "spend_local",
+          "type": "number",
+          "cardinality": "continuous_measure",
+          "data_classification": "internal"
+        },
+        {
+          "name": "fx_rate_date",
+          "type": "date",
+          "cardinality": "date",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "session_started",
+      "owner": "client-platform",
+      "authoritative_source": "client",
+      "event_version": "3.0",
+      "entity": "session",
+      "schema_status": "official",
+      "delivery_lane": "telemetry",
+      "properties": [
+        {
+          "name": "app_version",
+          "type": "string",
+          "cardinality": "bounded_release_id",
+          "data_classification": "internal"
+        },
+        {
+          "name": "platform",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "core_loop_completed",
+      "owner": "gameplay-team",
+      "authoritative_source": "server",
+      "event_version": "1.4",
+      "entity": "loop_attempt",
+      "schema_status": "official",
+      "delivery_lane": "telemetry",
+      "properties": [
+        {
+          "name": "result",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        },
+        {
+          "name": "level_id",
+          "type": "string",
+          "cardinality": "high_bounded_id",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "order_completed",
+      "owner": "payments",
+      "authoritative_source": "order_backend",
+      "event_version": "2.0",
+      "entity": "order",
+      "schema_status": "official",
+      "delivery_lane": "both",
+      "properties": [
+        {
+          "name": "gross_amount_local",
+          "type": "number",
+          "cardinality": "continuous_measure",
+          "data_classification": "restricted"
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "ad_impression",
+      "owner": "monetization-sdk",
+      "authoritative_source": "mediation_report",
+      "event_version": "1.2",
+      "entity": "ad_impression",
+      "schema_status": "implemented",
+      "delivery_lane": "telemetry",
+      "notes": "Estimated revenue is restated by networks; client impression counts are reconciled, not summed.",
+      "properties": [
+        {
+          "name": "ad_format",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        },
+        {
+          "name": "ad_network",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        },
+        {
+          "name": "estimated_revenue_local",
+          "type": "number",
+          "cardinality": "continuous_measure",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "rewarded_ad_started",
+      "owner": "monetization-sdk",
+      "authoritative_source": "client",
+      "event_version": "1.2",
+      "entity": "ad_opportunity",
+      "schema_status": "official",
+      "delivery_lane": "telemetry",
+      "properties": [
+        {
+          "name": "placement_id",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        }
+      ]
+    },
+    {
+      "name": "rewarded_ad_reward_granted",
+      "owner": "gameplay-team",
+      "authoritative_source": "server",
+      "event_version": "1.1",
+      "entity": "ad_opportunity",
+      "schema_status": "official",
+      "delivery_lane": "both",
+      "properties": [
+        {
+          "name": "placement_id",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        },
+        {
+          "name": "grant_status",
+          "type": "string",
+          "cardinality": "bounded_enum",
+          "data_classification": "internal"
+        }
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "daily_value_realizing_players",
+      "name": "Daily value-realizing players",
+      "zh": "日有效体验玩家数",
+      "aliases": ["有效活跃", "深度活跃用户"],
+      "domain": "engagement",
+      "tier": "north_star",
+      "question": "How many accounts actually get the intended play experience each day, rather than merely opening the app?",
+      "definition": "Distinct eligible accounts that complete at least two core loops in a product day. Chosen from the participation distribution, not from a round number.",
+      "formula": "count_distinct(account_id where completed_core_loops_in_day >= 2)",
+      "entity": "account",
+      "grain": "product_day",
+      "window": "product day in Asia/Shanghai",
+      "dimensions": ["platform", "channel", "app_version", "cohort_age_days"],
+      "filters": ["exclude QA, internal, bot-flagged, and banned accounts"],
+      "source_events": ["session_started", "core_loop_completed"],
+      "owner": "product-analytics",
+      "freshness": "daily by 11:00 local",
+      "status": "approved",
+      "direction": "increase while ad-load and retention guardrails hold",
+      "review_note": "Re-derive the loop threshold each quarter; a threshold copied from another title is not a definition."
+    },
+    {
+      "id": "d1_exact_retention_rate",
+      "name": "D1 exact-day retention rate",
+      "zh": "次日留存率（精确日）",
+      "aliases": ["次留", "1日留存"],
+      "domain": "retention",
+      "tier": "driver",
+      "question": "Do newly acquired accounts come back on the very next day?",
+      "definition": "Share of an activation cohort that is active on exactly cohort date + 1. Cohort anchor is first qualifying activation, not install postback. Aggregated as sum(retained) / sum(eligible cohort), never as an average of daily percentages.",
+      "formula": "count_distinct(cohort accounts active on day 1) / count_distinct(eligible cohort accounts)",
+      "entity": "account",
+      "grain": "activation_cohort_day",
+      "window": "exactly cohort date + 1 product day",
+      "zero_denominator_policy": "Return null when the eligible cohort is 0; never render 0%.",
+      "dimensions": ["media_source", "campaign_id", "platform", "region", "app_version"],
+      "filters": ["exclude reattributed reinstalls, QA, and bot-flagged accounts"],
+      "source_events": ["ua_install_attributed", "session_started"],
+      "owner": "growth-analytics",
+      "freshness": "daily by 11:00 local, cohort restated for 3 days",
+      "status": "approved",
+      "direction": "increase",
+      "benchmark": {
+        "value": "own trailing 8-week median for the same media_source and platform",
+        "source": "internal warehouse, metric d1_exact_retention_rate v2",
+        "region": "CN mainland",
+        "genre": "casual puzzle",
+        "platform": "Android",
+        "cohort_date": "2026-05-01 to 2026-06-26 activation cohorts",
+        "definition": "exact-day, activation-anchored, weighted aggregation",
+        "note": "Internal comparison baseline only. Do not compare against externally quoted retention numbers whose anchor, aggregation, and acquisition mix are unknown."
+      }
+    },
+    {
+      "id": "rewarded_ad_completion_rate",
+      "name": "Rewarded ad completion rate",
+      "zh": "激励视频完成率",
+      "aliases": ["激励广告完播率"],
+      "domain": "monetization",
+      "tier": "diagnostic",
+      "question": "Once a player chooses to watch a rewarded ad, does the flow finish and pay out?",
+      "definition": "Completed rewarded views divided by started rewarded views. Reward-grant failures are tracked separately because a completed view without a granted reward is a trust incident, not a monetization win.",
+      "formula": "count(rewarded views completed) / count(rewarded views started)",
+      "entity": "ad_opportunity",
+      "grain": "product_day",
+      "window": "product day in Asia/Shanghai",
+      "zero_denominator_policy": "Return null when started views are 0; suppress the tile rather than showing undefined.",
+      "dimensions": ["placement_id", "ad_network", "platform", "region"],
+      "filters": ["exclude test placements and debug builds"],
+      "source_events": ["rewarded_ad_started", "rewarded_ad_reward_granted", "ad_impression"],
+      "owner": "monetization-analytics",
+      "freshness": "hourly, network revenue reconciled next day",
+      "status": "approved",
+      "direction": "increase; investigate any drop alongside SDK version and network mix"
+    },
+    {
+      "id": "ad_arpdau",
+      "name": "Ad ARPDAU",
+      "zh": "广告 ARPDAU",
+      "aliases": ["广告人均日收入"],
+      "domain": "monetization",
+      "tier": "outcome",
+      "question": "How much net ad revenue does an average daily active account generate?",
+      "definition": "Daily net ad revenue divided by DAU. Decomposed as ad-exposed rate × impressions per exposed account × eCPM / 1000 before any hypothesis is raised.",
+      "formula": "net ad revenue for the day / DAU",
+      "monetary_basis": "net ad revenue after mediation and platform share, in CNY at the reporting-day FX rate",
+      "entity": "account",
+      "grain": "product_day",
+      "window": "product day in Asia/Shanghai",
+      "zero_denominator_policy": "Return null when DAU is 0.",
+      "dimensions": ["ad_format", "ad_network", "platform", "region", "channel"],
+      "filters": ["exclude internal accounts; exclude days with a known mediation reporting incident"],
+      "source_events": ["ad_impression", "session_started"],
+      "owner": "monetization-analytics",
+      "freshness": "T+1 by 12:00 local; restated when networks revise revenue",
+      "status": "approved",
+      "direction": "increase without degrading D1/D7 retention or session length",
+      "restatement_policy": "Network revisions are applied to the original day; the dashboard shows the restatement delta."
+    },
+    {
+      "id": "d7_roas",
+      "name": "D7 ROAS",
+      "zh": "7 日广告支出回报（俗称 7 日 ROI）",
+      "aliases": ["7日ROI", "首周回收"],
+      "domain": "acquisition",
+      "tier": "outcome",
+      "question": "How much of the media spend on an acquisition cohort has come back within 7 days?",
+      "definition": "Cumulative net revenue (IAP plus ad) attributable to an acquisition cohort through day 7, divided by the fully loaded media spend for that cohort. This is ROAS, not ROI: no cost of goods, no operating cost, no discounting is applied.",
+      "formula": "cumulative net revenue of the cohort through day 7 / media spend attributed to the cohort",
+      "monetary_basis": "net revenue after platform and channel share; spend includes agency fee and tax",
+      "entity": "acquisition_cohort",
+      "grain": "acquisition_cohort_day",
+      "window": "cohort date through cohort date + 7",
+      "zero_denominator_policy": "Return null when cohort spend is 0; organic cohorts are reported separately, not as infinite ROAS.",
+      "dimensions": ["media_source", "campaign_id", "creative_id", "platform", "region"],
+      "filters": ["exclude cohorts whose spend feed has not settled", "exclude fraud-flagged installs"],
+      "source_events": ["ua_install_attributed", "ua_spend_daily", "order_completed", "ad_impression"],
+      "owner": "growth-analytics",
+      "freshness": "T+1, spend restated for 3 days, revenue restated for 7",
+      "status": "approved",
+      "direction": "increase; scaling decisions use marginal ROAS at the campaign level, not this average",
+      "known_limits": "Attribution-based, so it inherits window, SKAN/privacy truncation, and organic contamination. Incrementality tests, not this metric, answer whether spend caused the revenue."
+    },
+    {
+      "id": "d30_predicted_ltv",
+      "name": "D30 predicted LTV",
+      "zh": "30 日预测 LTV",
+      "aliases": ["30日LTV预估"],
+      "domain": "acquisition",
+      "tier": "driver",
+      "question": "What net contribution should we expect from a new cohort by day 30, while it is still too young to measure?",
+      "definition": "Projected cumulative net revenue per acquired account through day 30, computed as the sum over days of fitted retention multiplied by observed ARPDAU by tenure. A predicted value, not a realized one.",
+      "formula": "sum over t in 1..30 of fitted_retention(t) * arpdau_by_tenure(t)",
+      "monetary_basis": "net revenue per acquired account, CNY, cohort-date FX",
+      "estimation_method": "Predicted: retention fitted per cohort family on weighted retention excluding day 0, ARPDAU by tenure from the trailing 4 mature cohorts. Backtested on cohorts already past day 30; current MAPE and its by-channel spread are published with the metric. Censoring and the tenure-mix assumption are stated on the dashboard.",
+      "entity": "acquisition_cohort",
+      "grain": "acquisition_cohort_day",
+      "window": "cohort date through cohort date + 30, projected",
+      "zero_denominator_policy": "Return null when the cohort is smaller than the minimum fit size.",
+      "dimensions": ["media_source", "platform", "region"],
+      "filters": ["exclude cohorts below the minimum fit size", "exclude cohorts spanning a monetization change"],
+      "source_events": ["ua_install_attributed", "order_completed", "ad_impression", "session_started"],
+      "owner": "growth-analytics",
+      "freshness": "weekly refit, daily scoring",
+      "status": "proposed",
+      "direction": "increase; replace with realized D30 LTV as soon as the cohort matures",
+      "known_limits": "Long-horizon extrapolation from a power-law tail overestimates. Never present the projection without its backtest error and its replacement date."
+    }
+  ]
+}

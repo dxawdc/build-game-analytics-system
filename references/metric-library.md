@@ -2,6 +2,12 @@
 
 Use this as a selection library, not a mandatory checklist.
 
+Companion files: [cn-terminology-and-pitfalls.md](cn-terminology-and-pitfalls.md) for Chinese-market names and
+ambiguity traps, [ua-and-marketing-analytics.md](ua-and-marketing-analytics.md) for paid-acquisition metrics,
+[hybrid-monetization-and-iaa.md](hybrid-monetization-and-iaa.md) for ad and hybrid monetization,
+[growth-accounting-and-forecasting.md](growth-accounting-and-forecasting.md) for DAU/LTV projection, and
+[metric-system-engineering.md](metric-system-engineering.md) for naming, versioning, and alerting.
+
 ## Contents
 
 1. Definition contract
@@ -54,6 +60,9 @@ Never use a metric name as its definition.
 Build a step funnel from impression -> click -> store view -> download -> install -> first launch -> account/link -> tutorial -> first value -> first return -> first purchase. Include only observable steps and label attribution uncertainty.
 
 Activation must describe realized value, not merely app launch.
+
+Campaign-, creative-, and placement-level delivery metrics, the CPI identity, attribution-window policy, and fraud
+signatures are in [ua-and-marketing-analytics.md](ua-and-marketing-analytics.md).
 
 ## 3. Active use and engagement
 
@@ -176,6 +185,10 @@ Reward completion = completed rewarded views / started rewarded views
 ```
 
 Pair ad revenue with retention, session quality, crash/latency, opt-out, and frustration guardrails.
+
+For the full IAA funnel (opportunity → request → fill → render → complete → reward grant), the ad-revenue
+decomposition identity, mediation and floor-price effects, hybrid cannibalization, and mini-game platform
+specifics, read [hybrid-monetization-and-iaa.md](hybrid-monetization-and-iaa.md).
 
 ### LTV
 

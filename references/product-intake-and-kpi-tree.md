@@ -28,8 +28,14 @@ Collect only information that changes the design:
 | Data | Client logs, server logs, orders, ads, match, telemetry, support, surveys |
 | Decisions | Three to five decisions the system must improve in the next quarter |
 | Constraints | Privacy, latency, data quality, team capacity, launch deadlines |
+| Vocabulary | Which metric words the team already uses, and what each one currently means to them |
 
 When information is unavailable, create an assumption register with impact and validation path.
+
+Capture the team's existing vocabulary during intake, not after the dictionary is written. Reused words with
+different meanings are the most common cause of rework. For Chinese-language teams and partner reconciliation,
+read [cn-terminology-and-pitfalls.md](cn-terminology-and-pitfalls.md). If the team arrives with AARRR, PRAPA, RFM,
+HEART, or another framework, translate rather than discard it using [framework-crosswalk.md](framework-crosswalk.md).
 
 ## Translate goals into questions
 
