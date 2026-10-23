@@ -4,6 +4,14 @@
 
 适用于移动、PC、主机、网页、小游戏、MMO、RPG、SLG、卡牌、Gacha、休闲、竞技 PvP、买断制、订阅制、广告变现、混合变现、长线运营和 UGC 产品。
 
+<!-- caige-author:start -->
+**作者：才哥** · 微信公众号：**可以叫我才哥**
+
+微信扫码关注：
+
+<img src="assets/caige-wechat-qrcode.jpg" alt="微信公众号「可以叫我才哥」扫码关注二维码" width="172" height="172" />
+<!-- caige-author:end -->
+
 ## 能力
 
 - 设计北极星指标、KPI 树、驱动指标与体验护栏。
